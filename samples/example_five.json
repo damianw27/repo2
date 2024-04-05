@@ -1,0 +1,32 @@
+{
+  "companyName": "ABC Inc.",
+  "location": "New York",
+  "departments": [
+    {
+      "name": "HR",
+      "employees": [
+        {
+          "name": "Alice",
+          "position": "HR Manager"
+        },
+        {
+          "name": "Bob",
+          "position": "HR Assistant"
+        }
+      ]
+    },
+    {
+      "name": "Engineering",
+      "employees": [
+        {
+          "name": "Charlie",
+          "position": "Software Engineer"
+        },
+        {
+          "name": "David",
+          "position": "Systems Architect"
+        }
+      ]
+    }
+  ]
+}
