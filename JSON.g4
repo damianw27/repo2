@@ -18,6 +18,18 @@ arr
     | '[' ']'
     ;
 
+day
+    : DIGIT DIGIT
+    ;
+
+month
+    : DIGIT DIGIT
+    ;
+
+year
+    : DIGIT DIGIT DIGIT DIGIT
+    ;
+
 value
     : STRING
     | NUMBER
@@ -26,6 +38,7 @@ value
     | 'true'
     | 'false'
     | 'null'
+    | year '-' month '-' day
     ;
 
 STRING
@@ -59,6 +72,10 @@ fragment INT
 
 fragment EXP
     : [Ee] [+\-]? [0-9]+
+    ;
+
+DIGIT
+    : [0-9]
     ;
 
 WS
