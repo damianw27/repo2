@@ -14,22 +14,26 @@ jobs:
       - name: Check Version Changed
         id: check
         run: |
+          MAJOR=$(jq -r '.major' version.json)
+          MINOR=$(jq -r '.minor' version.json)
+          PATCH=$(jq -r '.patch' version.json)
+          VERSION_TAG="v$MAJOR.$MINOR.$PATCH"
           CHANGED_FILES=$(git diff --name-only $(git merge-base --fork-point remotes/origin/main || git merge-base remotes/origin/main HEAD))
-          if grep -q "version.json" <<< "$CHANGED_FILES"; then
-            echo "should_tag=true" >> $GITHUB_OUTPUT
+          if echo "$CHANGED_FILES" | grep -q "version.json" && ! git rev-parse "$VERSION_TAG" >/dev/null 2>&1; then
+            echo "should_tag=true" >> test.txt
           else
-            echo "should_tag=false" >> $GITHUB_OUTPUT
+            echo "should_tag=false" >> test.txt
           fi
 
       - name: Create TAG
         if: steps.check.outputs.should_tag == 'true'
         run: |
-          major=$(jq -r '.major' version.json)
-          minor=$(jq -r '.minor' version.json)
-          patch=$(jq -r '.patch' version.json)
-          tag="v$major.$minor.$patch"
-          git tag "$tag"
-          git push origin "$tag"
+          MAJOR=$(jq -r '.major' version.json)
+          MINOR=$(jq -r '.minor' version.json)
+          PATCH=$(jq -r '.patch' version.json)
+          VERSION_TAG="v$MAJOR.$MINOR.$PATCH"
+          git tag "$VERSION_TAG"
+          git push origin "$VERSION_TAG"
 
       - name: Send Sync Request
         if: steps.check.outputs.should_tag == 'true'
