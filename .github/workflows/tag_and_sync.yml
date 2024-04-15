@@ -15,7 +15,6 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Send Sync Request
-        if: steps.check.outputs.should_tag == 'true'
         run: |
           curl -L \
             -X POST \
