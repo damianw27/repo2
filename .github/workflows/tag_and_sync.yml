@@ -21,6 +21,7 @@ jobs:
           CHANGED_FILES=$(git diff --name-only $(git merge-base --fork-point remotes/origin/main || git merge-base remotes/origin/main HEAD))
           if echo "$CHANGED_FILES" | grep -q "version.json" && ! git rev-parse "$VERSION_TAG" >/dev/null 2>&1; then
             echo "should_tag=true" >> $GITHUB_OUTPUT
+            echo "should tag"
           else
             echo "should_tag=false" >> $GITHUB_OUTPUT
           fi
