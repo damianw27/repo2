@@ -18,12 +18,12 @@ jobs:
           MINOR=$(jq -r '.minor' version.json)
           PATCH=$(jq -r '.patch' version.json)
           VERSION_TAG="v$MAJOR.$MINOR.$PATCH"
+          LAST_TAG=$(git describe --abbrev=0 --tags)
           CHANGED_FILES=$(git diff --name-only $(git merge-base --fork-point remotes/origin/main || git merge-base remotes/origin/main HEAD))
           echo "$VERSION_TAG"
           echo "$CHANGED_FILES"
-          if echo "$CHANGED_FILES" | grep -q "version.json" && ! git rev-parse "$VERSION_TAG" >/dev/null 2>&1; then
+          if echo "$CHANGED_FILES" | grep -q "version.json" && ! git rev-parse "$VERSION_TAG" >/dev/null 2>&1 || [ "$LAST_TAG" != "$VERSION_TAG" ]; then
             echo "should_tag=true" >> $GITHUB_OUTPUT
-            echo "should tag"
           else
             echo "should_tag=false" >> $GITHUB_OUTPUT
           fi
