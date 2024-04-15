@@ -22,7 +22,7 @@ jobs:
           MINOR=$(jq -r '.minor' version.json)
           PATCH=$(jq -r '.patch' version.json)
           VERSION_TAG="v$MAJOR.$MINOR.$PATCH"
-          LAST_TAG=$(gh api repos/:owner/:repo/releases/latest --jq '.tag_name')
+          LAST_TAG=$(gh api repos/damianw27/repo2/releases/latest --jq '.tag_name')
           CHANGED_FILES=$(git diff --name-only $(git merge-base --fork-point remotes/origin/main || git merge-base remotes/origin/main HEAD))
           echo "$LAST_TAG"
           if (echo "$CHANGED_FILES" | grep -q "version.json" || [ "$LAST_TAG" != "$VERSION_TAG" ]) && ! git rev-parse "$VERSION_TAG" >/dev/null 2>&1; then
