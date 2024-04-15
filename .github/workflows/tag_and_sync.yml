@@ -1,0 +1,46 @@
+name: Create TAG and send sync request
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check Version Changed
+        id: check
+        run: |
+          CHANGED_FILES=$(git diff --name-only $(git merge-base --fork-point remotes/origin/main || git merge-base remotes/origin/main HEAD))
+          if grep -q "version.json" <<< "$CHANGED_FILES"; then
+            echo "should_tag=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_tag=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create TAG
+        if: steps.check.outputs.should_tag == 'true'
+        run: |
+          major=$(jq -r '.major' version.json)
+          minor=$(jq -r '.minor' version.json)
+          patch=$(jq -r '.patch' version.json)
+          tag="v$major.$minor.$patch"
+          git tag "$tag"
+          git push origin "$tag"
+
+      - name: Send Sync Request
+        if: steps.check.outputs.should_tag == 'true'
+        uses: octokit/request-action@v2.x
+        with:
+          route: POST /repos/:owner/:repo/actions/workflows/:workflow_id/dispatches
+          owner: damianw27
+          repo: repo1
+          workflow_id: synchronize-with-repo2.yml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
+          
+       
+          
