@@ -10,11 +10,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - uses: fregante/setup-git-user@v2
 
       - name: Check Version Changed
         id: check
         run: |
-          git pull
           MAJOR=$(jq -r '.major' version.json)
           MINOR=$(jq -r '.minor' version.json)
           PATCH=$(jq -r '.patch' version.json)
